@@ -26,6 +26,12 @@ offset. The default (1) is almost certainly not exactly right for
 every page -- adjust it once you've checked more examples, or pass 0
 to just link straight to the page number with no adjustment.
 
+Note: the viewer displays two leaves side by side per its 2-up mode,
+and redirects an even-numbered .../page/nNN URL to the next-lower odd
+number (e.g. n12 -> n11) since each pair is addressed by its odd leaf.
+So landing on the "wrong" side of a pair by one isn't visible in
+practice -- only being off by more than that matters.
+
 Usage:
     python3 export.py /path/to/sie_titles.db
     python3 export.py /path/to/sie_titles.db --volume СИЭ-01   # just one volume
