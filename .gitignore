@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+cache/
+*.db
+*.djvu
+.DS_Store
