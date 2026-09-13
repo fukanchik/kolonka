@@ -2,8 +2,8 @@
 """
 export.py -- pulls saved titles out of a kolonka sie_titles.db and writes,
 per volume, into data/:
-  - <volume>.csv  everything, in scan (page) order -- for programmatic use
-  - <volume>.md   a simplified table, alphabetically sorted -- renders
+  - SIE-<NN>.csv  everything, in scan (page) order -- for programmatic use
+  - SIE-<NN>.md   a simplified table, alphabetically sorted -- renders
                    directly in the GitHub browser as a browsable index
 
 In the .md output, the Page column links to the matching page on
@@ -135,6 +135,14 @@ def export_md(rows, out_path, volume, archive_id, offset):
         f.write("\n".join(lines) + "\n")
 
 
+def output_stem(volume):
+    """Filesystem-friendly output name: SIE-<NN> when the volume name ends
+    in a number (the normal case), else fall back to the raw volume name
+    rather than crash on something unexpected."""
+    num = volume_number(volume)
+    return f"SIE-{num:02d}" if num is not None else volume
+
+
 def export_volume(conn, volume, out_dir, archive_links, offset):
     rows = conn.execute(
         """SELECT page, "column", column_page, column_page_end, guessed,
@@ -145,8 +153,9 @@ def export_volume(conn, volume, out_dir, archive_links, offset):
 
     archive_id = archive_id_for_volume(volume) if archive_links else None
 
-    csv_path = out_dir / f"{volume}.csv"
-    md_path = out_dir / f"{volume}.md"
+    stem = output_stem(volume)
+    csv_path = out_dir / f"{stem}.csv"
+    md_path = out_dir / f"{stem}.md"
     export_csv(rows, csv_path)
     export_md(rows, md_path, volume, archive_id, offset)
 
